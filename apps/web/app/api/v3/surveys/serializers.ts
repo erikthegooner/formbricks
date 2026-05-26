@@ -10,7 +10,25 @@ import {
   resolveV3SurveyLanguageCode,
 } from "./language";
 
-export type TV3SurveyListItem = Omit<TSurveyListRecord, "singleUse">;
+export type TV3SurveyCreator = Pick<NonNullable<TSurveyListRecord["creator"]>, "name">;
+
+type TV3SurveyListItemBase = Pick<
+  TSurveyListRecord,
+  | "id"
+  | "name"
+  | "workspaceId"
+  | "type"
+  | "status"
+  | "publishOn"
+  | "createdAt"
+  | "updatedAt"
+  | "responseCount"
+>;
+
+export type TV3SurveyListItem = TV3SurveyListItemBase & {
+  creator: TV3SurveyCreator | null;
+};
+
 const DEFAULT_V3_SURVEY_LANGUAGE = "en-US";
 
 type TSerializedValue =
@@ -38,14 +56,33 @@ export class V3SurveyUnsupportedShapeError extends Error {
   }
 }
 
+export function serializeV3SurveyCreator(creator: TSurveyListRecord["creator"]): TV3SurveyCreator | null {
+  if (!creator) {
+    return null;
+  }
+
+  return {
+    name: creator.name,
+  };
+}
+
 /**
  * Keep the v3 API contract isolated from internal persistence naming.
  * Surveys are scoped by workspaceId.
  */
 export function serializeV3SurveyListItem(survey: TSurveyListRecord): TV3SurveyListItem {
-  const { singleUse: _omitSingleUse, ...rest } = survey;
-
-  return rest;
+  return {
+    id: survey.id,
+    name: survey.name,
+    workspaceId: survey.workspaceId,
+    type: survey.type,
+    status: survey.status,
+    publishOn: survey.publishOn,
+    createdAt: survey.createdAt,
+    updatedAt: survey.updatedAt,
+    responseCount: survey.responseCount,
+    creator: serializeV3SurveyCreator(survey.creator),
+  };
 }
 
 function toIsoString(value: Date | string): string {
