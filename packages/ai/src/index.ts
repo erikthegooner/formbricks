@@ -7,6 +7,7 @@ export {
   isAiConfigured,
   resetLanguageModelCache,
 } from "./provider";
+export { generateObject } from "./object";
 export { generateText } from "./text";
 export type { TAIProvider } from "@formbricks/types/ai";
 export type {
@@ -15,6 +16,8 @@ export type {
   AIEnvironment,
   AIProviderStatus,
   ActiveAIProvider,
+  TGenerateObjectOptions,
+  TGenerateObjectResult,
   TGenerateTextOptions,
   TGenerateTextResult,
 } from "./types";

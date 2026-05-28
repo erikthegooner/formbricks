@@ -1,5 +1,12 @@
 import "server-only";
-import { AIConfigurationError, generateText, isAiConfigured } from "@formbricks/ai";
+import {
+  AIConfigurationError,
+  type TGenerateObjectOptions,
+  type TGenerateObjectResult,
+  generateObject,
+  generateText,
+  isAiConfigured,
+} from "@formbricks/ai";
 import { logger } from "@formbricks/logger";
 import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
 import { env } from "@/lib/env";
@@ -75,6 +82,10 @@ type TGenerateOrganizationAITextInput = {
   organizationId: string;
 } & Parameters<typeof generateText>[0];
 
+type TGenerateOrganizationAIObjectInput = {
+  organizationId: string;
+} & TGenerateObjectOptions;
+
 export const generateOrganizationAIText = async ({
   organizationId,
   ...options
@@ -92,6 +103,28 @@ export const generateOrganizationAIText = async ({
         err: error,
       },
       "Failed to generate organization AI text"
+    );
+    throw error;
+  }
+};
+
+export const generateOrganizationAIObject = async <TObject = unknown>({
+  organizationId,
+  ...options
+}: TGenerateOrganizationAIObjectInput): Promise<TGenerateObjectResult<TObject>> => {
+  const aiConfig = await assertOrganizationAIConfigured(organizationId);
+
+  try {
+    return await generateObject<TObject>(options, env);
+  } catch (error) {
+    logger.error(
+      {
+        organizationId,
+        isInstanceConfigured: aiConfig.isInstanceConfigured,
+        errorCode: error instanceof AIConfigurationError ? error.code : undefined,
+        err: error,
+      },
+      "Failed to generate organization AI object"
     );
     throw error;
   }

@@ -1,4 +1,4 @@
-import type { LanguageModel, generateText } from "ai";
+import type { GenerateObjectResult, LanguageModel, generateText } from "ai";
 
 export const AI_PROVIDERS = ["aws", "google", "azure"] as const;
 
@@ -45,5 +45,12 @@ export interface AIConfigurationStatus {
 }
 
 export type AILanguageModel = LanguageModel;
+export type TGenerateObjectOptions = Omit<Parameters<typeof generateText>[0], "model" | "output"> & {
+  schema: unknown;
+  schemaName?: string;
+  schemaDescription?: string;
+  output?: "object";
+};
+export type TGenerateObjectResult<TObject = unknown> = GenerateObjectResult<TObject>;
 export type TGenerateTextOptions = Omit<Parameters<typeof generateText>[0], "model">;
 export type TGenerateTextResult = Awaited<ReturnType<typeof generateText>>;
