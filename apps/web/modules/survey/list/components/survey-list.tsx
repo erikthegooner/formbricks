@@ -54,11 +54,18 @@ interface SurveysListProps {
 type NewSurveyMenuProps = {
   workspace: ComponentProps<typeof TemplateContainerWithPreview>["workspace"];
   userId: string;
+  language: TUserLocale;
   isAIAvailable: boolean;
   aiUnavailableReason?: TAIUnavailableReason;
 };
 
-const NewSurveyMenu = ({ workspace, userId, isAIAvailable, aiUnavailableReason }: NewSurveyMenuProps) => {
+const NewSurveyMenu = ({
+  workspace,
+  userId,
+  language,
+  isAIAvailable,
+  aiUnavailableReason,
+}: NewSurveyMenuProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
@@ -140,6 +147,7 @@ const NewSurveyMenu = ({ workspace, userId, isAIAvailable, aiUnavailableReason }
       </DropdownMenu>
       <CreateWithAIDialog
         workspaceId={workspace.id}
+        language={language}
         isAIAvailable={isAIAvailable}
         aiUnavailableReason={aiUnavailableReason}
         open={isAIDialogOpen}
@@ -232,6 +240,7 @@ export const SurveysList = ({
     <NewSurveyMenu
       workspace={workspace}
       userId={userId}
+      language={locale}
       isAIAvailable={isAIAvailable}
       aiUnavailableReason={aiUnavailableReason}
     />
@@ -264,6 +273,7 @@ export const SurveysList = ({
         workspace={workspace}
         isTemplatePage={false}
         publicDomain={publicDomain}
+        language={locale}
         isAIAvailable={isAIAvailable}
         aiUnavailableReason={aiUnavailableReason}
       />
