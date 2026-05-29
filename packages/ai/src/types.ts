@@ -1,4 +1,4 @@
-import type { GenerateObjectResult, LanguageModel, generateText } from "ai";
+import type { FlexibleSchema, LanguageModel, generateText } from "ai";
 
 export const AI_PROVIDERS = ["aws", "google", "azure"] as const;
 
@@ -45,12 +45,24 @@ export interface AIConfigurationStatus {
 }
 
 export type AILanguageModel = LanguageModel;
+type GenerateTextResult = Awaited<ReturnType<typeof generateText>>;
+
 export type TGenerateObjectOptions = Omit<Parameters<typeof generateText>[0], "model" | "output"> & {
-  schema: unknown;
+  schema: FlexibleSchema<unknown>;
   schemaName?: string;
   schemaDescription?: string;
   output?: "object";
 };
-export type TGenerateObjectResult<TObject = unknown> = GenerateObjectResult<TObject>;
+export interface TGenerateObjectResult<TObject = unknown> {
+  readonly object: TObject;
+  readonly reasoning: GenerateTextResult["reasoningText"];
+  readonly finishReason: GenerateTextResult["finishReason"];
+  readonly usage: GenerateTextResult["usage"];
+  readonly warnings: GenerateTextResult["warnings"];
+  readonly request: GenerateTextResult["request"];
+  readonly response: GenerateTextResult["response"];
+  readonly providerMetadata: GenerateTextResult["providerMetadata"];
+  toJsonResponse: (init?: ResponseInit) => Response;
+}
 export type TGenerateTextOptions = Omit<Parameters<typeof generateText>[0], "model">;
-export type TGenerateTextResult = Awaited<ReturnType<typeof generateText>>;
+export type TGenerateTextResult = GenerateTextResult;
