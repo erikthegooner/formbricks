@@ -90,7 +90,7 @@ export function useChartDialog({
 
     const fetchChartById = async (id: string): Promise<TChart> => {
       const result = await getChartAction({ workspaceId, chartId: id });
-      if (!result?.data) {
+      if (!result?.data || result?.serverError) {
         throw new Error(
           getFormattedErrorMessage(result) || t("workspace.analysis.charts.failed_to_load_chart")
         );
@@ -189,7 +189,7 @@ export function useChartDialog({
           },
         });
 
-        if (!result?.data) {
+        if (!result?.data || result?.serverError) {
           const errorMessage = getFormattedErrorMessage(result);
           toast.error(errorMessage);
           return;
@@ -208,7 +208,7 @@ export function useChartDialog({
           },
         });
 
-        if (!result?.data) {
+        if (!result?.data || result?.serverError) {
           const errorMessage = getFormattedErrorMessage(result);
           toast.error(errorMessage);
           return;
@@ -227,7 +227,7 @@ export function useChartDialog({
           dashboardId: autoAddToDashboardId,
         });
 
-        if (!addResult?.data) {
+        if (!addResult?.data || addResult?.serverError) {
           toast.error(
             getFormattedErrorMessage(addResult) ||
               t("workspace.analysis.charts.failed_to_add_chart_to_dashboard")
@@ -280,7 +280,7 @@ export function useChartDialog({
       },
     });
 
-    if (!chartResult?.data) {
+    if (!chartResult?.data || chartResult?.serverError) {
       toast.error(
         (chartResult && getFormattedErrorMessage(chartResult)) ||
           t("workspace.analysis.charts.failed_to_save_chart")
@@ -316,7 +316,7 @@ export function useChartDialog({
         dashboardId: selectedDashboardId,
       });
 
-      if (!widgetResult?.data) {
+      if (!widgetResult?.data || widgetResult?.serverError) {
         toast.error(
           (widgetResult && getFormattedErrorMessage(widgetResult)) ||
             t("workspace.analysis.charts.failed_to_add_chart_to_dashboard")
