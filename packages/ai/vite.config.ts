@@ -23,6 +23,7 @@ export default defineConfig({
         "@ai-sdk/google-vertex",
         "@aws-sdk/credential-providers",
         "@formbricks/logger",
+        "node:crypto",
       ],
     },
     emptyOutDir: false,
